@@ -5,34 +5,28 @@ const rootDir = require('../utils/pathUtill');
 const favouriteDataPath = path.join(rootDir, 'data', 'favourite.json');
 
 module.exports = class Favourite {
-    constructor(houseName, price, location, rating, photoUrl) {
-        this.houseName = houseName;
-        this.price = price;
-        this.location = location;
-        this.rating = rating;
-        this.photoUrl = photoUrl;
-    }
 
-    save() {
-        this.id = Math.random().toString();
-        Home.fetchAll((registeredHomes) => {
-            registeredHomes.push(this);
-            fs.writeFile(homeDataPath, JSON.stringify(registeredHomes), (err) => {
-                console.log("File Writing Concluded", err);
-            });
-        });
-    }
+   static addToFavourite(homeId,callback){
+     Favourite.getFavourites((favourites)=>{
+        if(favourites.includes(homeId)){
+            callback("Home is already marked favourite");
+        }else{
+            favourites.push(homeId);
+            fs.writeFile(favouriteDataPath,JSON.stringify(favourites),callback);
+        }
+    });
+   }
 
-    static fetchAll(callback) {
-        fs.readFile(homeDataPath, (err, data) => {
-            callback(!err ? JSON.parse(data) : []);
-        });
-    }
+   static getFavourites(callback){
+    fs.readFile(favouriteDataPath,(err,data)=>{
+        callback(!err ? JSON.parse(data):[]);
+    })
+   }
 
-    static findById(homeId,callback){
-        this.fetchAll(homes =>{
-            const homeFound = homes.find(home => home.id === homeId);
-            callback(homeFound);
-        })
-    }
-}
+   static deleteById(delHomeId, callback){
+    Favourite.getFavourites(homeIds =>{
+        homeIds = homeIds.filter(homeId => delHomeId !== homeId);
+        fs.writeFile(favouriteDataPath, JSON.stringify(homeIds),callback);
+    })
+   }
+};
