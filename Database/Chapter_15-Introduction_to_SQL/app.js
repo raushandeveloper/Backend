@@ -5,15 +5,7 @@ const storeRouter = require('./routes/storeRouter');
 const hostRouter = require('./routes/hostRouter');
 const rootDir = require('./utils/pathUtill');
 const errorsController = require('./controllers/errors');
-const db = require('./utils/databaseUtil');
 
-db.execute('SELECT * FROM homes')
-.then(([rows,field]) => {
-    console.log('Getting from DB',rows);
-})
-.catch(error =>{
-    console.log('Error while reading home records',error);
-})
 
 const app = express();
 
