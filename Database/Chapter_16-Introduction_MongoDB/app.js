@@ -5,6 +5,7 @@ const storeRouter = require('./routes/storeRouter');
 const hostRouter = require('./routes/hostRouter');
 const rootDir = require('./utils/pathUtil');
 const errorsController = require('./controllers/errors');
+const {mongoConnect} = require('./utils/databaseUtil');
 
 
 const app = express();
@@ -21,6 +22,8 @@ app.use("/host", hostRouter);
 app.use(errorsController.pageNotFound);
 
 const PORT = 3000;
-app.listen(PORT, () => {
+mongoConnect(() =>{
+    app.listen(PORT, () => {
     console.log(`Server running on address http://localhost:${PORT}`);
 });
+})
