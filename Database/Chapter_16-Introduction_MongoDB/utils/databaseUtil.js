@@ -1,7 +1,7 @@
 const mongo = require('mongodb');
 
 const MongoClient = mongo.MongoClient;
-const MONGO_URL = "mongodb+srv://root:Raushan%4070@completecoding.djxle2f.mongodb.net/?appName=CompleteCoding";
+const MONGO_URL = "mongodb+srv://root:Raushan70@completecoding.djxle2f.mongodb.net/?appName=CompleteCoding";
 
 let _db;
 

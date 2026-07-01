@@ -4,7 +4,7 @@ const Home = require("../models/home");
 
 
 exports.getIndex = (req,res,next)=>{
-    const registeredHomes = Home.fetchAll().then(([registeredHomes])=>{
+    const registeredHomes = Home.fetchAll().then(registeredHomes=>{
            res.render('store/index',{ 
                registeredHomes: registeredHomes,
                pageTitle: "airbnb Home",
@@ -14,7 +14,7 @@ exports.getIndex = (req,res,next)=>{
 };
 
 exports.getHomes = (req,res,next)=>{
-    const registeredHomes =Home.fetchAll().then(([registeredHomes])=>{
+   const registeredHomes = Home.fetchAll().then(registeredHomes=>{
          res.render('store/home-list',{ registeredHomes: registeredHomes,pageTitle: "Homes List",currentPage:'Home' 
          })
 });
@@ -29,10 +29,10 @@ exports.getBookings = (req,res,next)=>{
 
 exports.getFavouritesList = (req, res, next) => {
     Favourite.getFavourites(favourites => {
-       Home.fetchAll().then(([registeredHomes])=>{
+       Home.fetchAll().then(registeredHomes =>{
             // ✅ Filter FIRST, assign to variable
             const favouriteHomes = registeredHomes.filter(home => {
-                return favourites.includes(home.id); // ✅ Use the fetched favourites here
+                return favourites.includes(home._id); // ✅ Use the fetched favourites here
             });
 
             // ✅ Render AFTER filter is complete, outside the filter callback
@@ -67,8 +67,7 @@ exports.postRemoveFromFavourite = (req,res,next)=>{
 exports.getHomeDetails = (req,res,next)=>{
      const homeId = req.params.homeId;
      console.log("At home details page",homeId);
-     Home.findById(homeId).then (([homes]) =>{
-         const home = homes[0];
+     Home.findById(homeId).then (home =>{
           if(!home){
                console.log("Home not found");
                res.redirect("/homes");
