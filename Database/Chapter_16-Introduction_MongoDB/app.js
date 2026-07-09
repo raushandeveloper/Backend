@@ -14,6 +14,7 @@ app.set("view engine", "ejs");
 app.set('views', 'views');
 
 app.use(express.urlencoded({ extended: false }));
+app.use('/image', express.static(path.join(rootDir, "public", "images")));
 app.use(express.static(path.join(rootDir, "public")));
 
 app.use(storeRouter);

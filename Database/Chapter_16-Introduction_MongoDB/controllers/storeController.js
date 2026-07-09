@@ -28,11 +28,13 @@ exports.getBookings = (req,res,next)=>{
 };
 
 exports.getFavouritesList = (req, res, next) => {
-    Favourite.getFavourites(favourites => {
+    Favourite.getFavourites().then(favourites => {
+     favourites = favourites.map(fav => fav.houseId); // Extract houseIds from favourites
        Home.fetchAll().then(registeredHomes =>{
             // ✅ Filter FIRST, assign to variable
+            console.log(favourites,registeredHomes);
             const favouriteHomes = registeredHomes.filter(home => {
-                return favourites.includes(home._id); // ✅ Use the fetched favourites here
+                return favourites.includes(home._id.toString()); // ✅ Use the fetched favourites here
             });
 
             // ✅ Render AFTER filter is complete, outside the filter callback
@@ -46,23 +48,27 @@ exports.getFavouritesList = (req, res, next) => {
 };
 
 exports.postAddToFavourite = (req,res,next)=>{
-     Favourite.addToFavourite(req.body.id, error=>{
-          if(error){
-               console.log("Error while marking favourite",error);
-          }
-          res.redirect("/favourites");
+     const homeId = req.body.id;
+     const fav = new Favourite(homeId);
+     fav.save().then(result =>{
+          console.log('Fav added: ',result);
+     }).catch(err =>{
+           console.log('Error while adding to Favourite',err);
+     }).finally(()=>{
+               res.redirect("/favourites");
      })
-}
+};
 
 exports.postRemoveFromFavourite = (req,res,next)=>{
-     const homeId = req.params.homeId;
-     Favourite.deleteById(homeId,error =>{
-          if(error){
-               console.log('Error while removing from Favourite',error);
-          }
-          res.redirect("/favourites");
-     })
-}
+    const homeId = req.params.homeId;
+     Favourite.deleteById(homeId).then(result =>{
+          console.log('Fav removed: ',result);
+     }).catch(err =>{
+           console.log('Error while removing from Favourite',err);
+     }).finally(()=>{
+               res.redirect("/favourites");
+     });
+};
 
 exports.getHomeDetails = (req,res,next)=>{
      const homeId = req.params.homeId;
